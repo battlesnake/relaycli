@@ -2,7 +2,7 @@
 (
 set -e
 declare -r tmp='./relaycli'
-declare -r addr=':: 49501'
+declare -r addr=':: 3031'
 case "${1:-}" in
 
 win1)
