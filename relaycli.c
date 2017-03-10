@@ -49,6 +49,7 @@ exit 0
 #include <cstd/unix.h>
 #include <relay/relay_client.h>
 #include <getdelim/getdelim.h>
+#include <debug/hexdump.h>
 
 static void show_help(const char *name)
 {
@@ -77,19 +78,20 @@ static pthread_t rx_tid;
 static void *rx_thread(void *p)
 {
 	(void) p;
-	struct relay_packet *packet;
 	pthread_mutex_lock(&mx);
 	pthread_cond_signal(&cv);
 	pthread_mutex_unlock(&mx);
-	while ((packet = relay_client_recv_packet(&client))) {
+	struct relay_packet *packet;
+	while (relay_client_recv_packet(&client, &packet) && packet != NULL) {
 		if (verbosity >= 2) {
 			log_info("Packet of type '%s' received from '%s' containing %zu bytes of data", packet->type, packet->remote, packet->length);
+			hexcat(packet->data, packet->length, 0);
 		}
 		printf("%s%c%s%c%.*s%c", packet->remote, delim, packet->type, delim, (int) packet->length, packet->data, delim);
 		free(packet);
 	}
 	if (verbosity >= 1) {
-			log_info("Reception ended");
+		log_info("Reception ended");
 	}
 	return NULL;
 }

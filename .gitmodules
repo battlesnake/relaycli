@@ -19,3 +19,6 @@
 [submodule "c_modules/cstruct"]
 	path = c_modules/cstruct
 	url = git@github.com:opencosmos/cstruct
+[submodule "c_modules/debug"]
+	path = c_modules/debug
+	url = git@github.com:opencosmos/debug
